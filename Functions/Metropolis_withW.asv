@@ -21,7 +21,7 @@ for iter1 = 1 : numIters
             end
         end
     elseif sys.B(Ind)==1
-        if sys.B2W(Ind)==0
+        if sys.B2W_num(Ind)==0
             if rand()<p1
                 sys.B(Ind)=0;
                 sys.T(sys.B_relation(Ind,1))=0;
@@ -38,20 +38,20 @@ for iter1 = 1 : numIters
         BInd1=b(randi(size(b)));
         [bi,wi] = NearBivalent(sys,BInd1);
         for Iter2 = 1: p_iter2
-            if isempty(bi)
-               break; 
+            if
+                
             end
-            Ind=randi(size(bi,1));
+            Ind=randi(size(bi))
             BInd2=bi(Ind);
-            WInd=wi(Ind);
             if sys.B(BInd2)==1
-                if sys.W(WInd)==0 & sys.B2W(BInd1)<sys.WperB & sys.B2W(BInd2)<sys.WperB
+                WInd=wInd(Ind);
+                if sys.W(Ind)==0 & sys.B2W(BInd1)<sys.WperB & sys.B2W(BInd2)<sys.WperB
                     if rand()<p3
                         sys.W(WInd)=1;
                         sys.B2W(BInd1)=sys.B2W(BInd1)+1;
                         sys.B2W(BInd2)=sys.B2W(BInd2)+1;
                     end
-                elseif sys.W(WInd)==1
+                elseif sys.W(Ind)==1
                     if rand()<p4
                         sys.W(WInd)=0;
                         sys.B2W(BInd1)=sys.B2W(BInd1)-1;
