@@ -1,5 +1,5 @@
 %%
-function ProbS_column = par_Metropolis(Project_title,type,Tnum,kD1,kD2,kD2_eff,pA,TestTime, MCMC_num, WperT, isSC)
+function ProbS_column = par_Metropolis(Project_title,type,Tnum,kD1,kD2,kD2_eff,pA,TestTime, MCMC_num, WperT, Wlen, isSC)
 
 ProbS_column=zeros(1,TestTime);
 
@@ -10,12 +10,12 @@ if isSC
 end
 
 %disp("start simulation for kD2="+ string(kD2))
-sys = Init_AT_System(type,Tnum, WperT);
+sys = Init_AT_System(type,Tnum, WperT, Wlen);
 for t=1:TestTime
     if rem(t,2^10)==0
         %disp("Done simulation for kD2="+ string(kD2_list(i))+" & t="+string(t/2^10)+" th 2^10")
     end
-    sys = Init_AT_System(type,Tnum, WperT);
+    sys = Init_AT_System(type,Tnum, WperT, Wlen);
     for j=1:MCMC_num
         sys = Metropolis_withW(sys,kD1,kD2,kD2_eff,pA);
     end

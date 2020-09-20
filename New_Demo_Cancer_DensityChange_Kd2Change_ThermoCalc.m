@@ -1,4 +1,4 @@
-    %%
+%%
 % Written by Jinyeop Song, 2020/07/20
 % This is the demo code for Antibody_ThermoCalc_JY.
 % To run the code, follow the description of each sections.
@@ -7,7 +7,7 @@
 clc; clear;
 
 % To change
-addpath(genpath('D:\JY_matlab\Antibody_ThermoCalc_JY')) % Add the entire path of Antibody_ThermoCalc_JY
+addpath(genpath('D:\JY_matlab\Antibody_Bivalent_JY')) % Add the entire path of Antibody_ThermoCalc_JY
 
 % To change
 Kd1=10*10^-9; % antibody - target Kd
@@ -33,22 +33,25 @@ type="randomQuasiSphere2D"; % Choose among randomUniformFlat2D randomUniformSphe
 
 % To change 
 WperT=2; % number of Weak-binding tether per an antigen
+Wlen=1.5; % length of weak teather, in relative scale
 
 % To change 
 isSC=0; % set 1 for considering self-cohesion, 0 for not considering
 
 % To change
-L=50; % total area of the surface
-density_List = [0.5 2.0 5.0] %[0.5 2.0 5.0] ; % list density of antigen on the surface
+L=10; % total area of the surface
+density_List = [0.5 1.0 2.0] %[0.5 2.0 5.0] ; % list density of antigen on the surface
 Tnum_List=floor(L*density_List);
-
 % So, the total number of antigen (Tnum) becomes L*density
+
+% To change
+MCMC_steps=10; %% Number of MCMC steps, typically set >5.
 
 % To change
 disp("Parameter setting done")
 
 %% Setting MCMC step Parameters
-TestTime=10*2^10;
+TestTime=10*2^1;
 Project_title = "DensityChange_demo_rung_log";
 IsSave=1; % set 1 to save data, 0 fotherwise
 ProbS=zeros(size(density_List,2), size(Kd2_list,2), TestTime);
@@ -65,12 +68,12 @@ for j=1:size(density_List,2)
     density=density_List(j);
     Tnum=Tnum_List(j);
     parfor i=1:size(Kd2_list,2)
-        ProbS(j, i,:)=par_Metropolis_RS(Project_title,type,L, density,Kd1,Kd2_list(i),Kd2_eff_list(i),pA,TestTime, 100, WperT, isSC)
+        ProbS(j, i,:)=par_Metropolis_RS(Project_title,type,L, density,Kd1,Kd2_list(i),Kd2_eff_list(i),pA,TestTime, MCMC_steps, WperT, Wlen, isSC)
     end
     
 
 end
-sys_model= Init_AT_System_RS(type,L,density, WperT);
+sys_model= Init_AT_System_RS(type,L,density, WperT, Wlen);
 
 if IsSave
     save("Data/"+Project_title+".mat",'TestTime','Kd2_list','density_List','Kd1','V_eff','Kd2_eff_list','pA','Tnum_List','type','ProbS', 'WperT', 'Cr', 'isSC')
@@ -90,7 +93,7 @@ Legend=[];
 
 data2=[];
 for i=2:size(Kd2_list,2)
-    data2=[data2 Cohesion(Kd2_list(i),pA,WperT)];
+    data2=[data2 0 ]%Cohesion(Kd2_list(i),pA,WperT)];
 end
 yyaxis right
 semilogx(Kd2_list(2:size(Kd2_list,2)),data2,'-d','Color',cmap(1,:),'MarkerEdgeColor',cmap(1,:))

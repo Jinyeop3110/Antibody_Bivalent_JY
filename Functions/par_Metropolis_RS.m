@@ -1,4 +1,4 @@
-function ProbS_column = par_Metropolis_RS(Project_title,type,L,density,Kd1,Kd2,Kd2_eff,pA,TestTime, MCMC_num, WperT, isSC)
+function ProbS_column = par_Metropolis_RS(Project_title,type,L,density,Kd1,Kd2,Kd2_eff,pA,TestTime, MCMC_num, WperT, Wlen, isSC)
 
 destroy_ratio=0.5;
 destroy_repnum=3;
@@ -20,7 +20,7 @@ for t=1:TestTime
         %disp("Done simulation for kD2="+ string(Kd2_list(i))+" & t="+string(t/2^10)+" th 2^10")
     end
     
-    sys = Init_AT_System_RS(type,L,density, WperT);
+    sys = Init_AT_System_RS(type,L,density, WperT, Wlen);
     
     for j=1:MCMC_num
         
@@ -28,9 +28,7 @@ for t=1:TestTime
         
         
         if j<destroy_limit
-                if rem(j,destroy_repnum)==0   
-                    sys = Destroy(sys,destroy_ratio);
-                end
+            a=1;
         end
     end
     

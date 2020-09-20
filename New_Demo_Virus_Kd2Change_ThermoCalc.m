@@ -7,7 +7,7 @@
 clc; clear;
 
 % To change
-addpath(genpath('D:\JY_matlab\Antibody_ThermoCalc_JY')) % Add the entire path of Antibody_ThermoCalc_JY
+addpath(genpath('D:\JY_matlab\Antibody_Bivalent_JY')) % Add the entire path of Antibody_ThermoCalc_JY
 
 % To change
 Kd1=20*10^-9; % antibody - target Kd
@@ -33,17 +33,22 @@ type="square2D"; % Choose among "linear1D", "circle1D", "square2D", "traingularS
 
 % To change 
 WperT=2; % number of Weak-binding tether per an antigen
+Wlen=1.5; % length of weak teather, in relative scale
 
 % To change 
 isSC=0; % set 1 for considering self-cohesion, 0 for not considering
 
 
 % To change
-Tnum=64; % number of antigen number. If Tnum is not allowed by the chosen "type", Tnum is set to nearest allowed value. 
+Tnum=9; % number of antigen number. If Tnum is not allowed by the chosen "type", Tnum is set to nearest allowed value. 
+
+% To change
+MCMC_steps=10; %% Number of MCMC steps, typically set >5.
+
 
 disp("Parameter setting done")
 %% Setting MCMC step Parameters
-TestTime=10*2^10;
+TestTime=1*2^4;
 Project_title = "MMDD_square2D_Tnum98_demo";
 IsSave=0; % set 1 to save data, 0 fotherwise
 ProbS=zeros(size(Kd2_list,2),TestTime);
@@ -56,10 +61,10 @@ if ~isfolder("Data\"+Project_title+"_")
 end
 
 parfor i=1:size(Kd2_list,2)
-    ProbS(i,:)=par_Metropolis(Project_title,type,Tnum,Kd1,Kd2_list(i),Kd2_eff_list(i),pA,TestTime, 10, WperT, isSC)
+    ProbS(i,:)=par_Metropolis(Project_title,type,Tnum,Kd1,Kd2_list(i),Kd2_eff_list(i),pA,TestTime, MCMC_steps, WperT, Wlen, isSC)
 end
 
-sys_model=Init_AT_System(type,Tnum,WperT);
+sys_model=Init_AT_System(type,Tnum,WperT, Wlen);
 
 if IsSave
     save("Data\"+Project_title+".mat",'TestTime','Kd2_list','Kd1','V_eff','Kd2_eff_list','pA','sys_model','Tnum','type','ProbS')

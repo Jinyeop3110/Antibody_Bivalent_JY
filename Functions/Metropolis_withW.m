@@ -22,7 +22,7 @@ for iter1 = 1 : numIters
         end
     elseif sys.B(Ind)==1
         if sys.B2W(Ind)==0
-            if rand()<p1
+            if rand()<p2
                 sys.B(Ind)=0;
                 sys.T(sys.B_relation(Ind,1))=0;
                 sys.T(sys.B_relation(Ind,2))=0;
